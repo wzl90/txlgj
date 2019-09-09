@@ -1,0 +1,23 @@
+//
+//  txlgj.pch
+//  txlgj
+//
+//  Created by wuzhuanlin on 2019/9/3.
+//  Copyright © 2019 com.octInn. All rights reserved.
+//
+
+#ifndef txlgj_pch
+#define txlgj_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif /* txlgj_pch */
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#define NTES_USE_CLEAR_BAR - (BOOL)useClearBar{return YES;}
+
+#define NTES_FORBID_INTERACTIVE_POP - (BOOL)forbidInteractivePop{return YES;}
+
+#endif
