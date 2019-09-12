@@ -14,11 +14,13 @@
 #import "MBProgressHUD.h"
 #import "commonUtil.h"
 #import <AddressBook/AddressBook.h>
+#import "OIHUD.h"
+
 @interface DeleteVC ()<UITableViewDelegate,UITableViewDataSource,YYNTableViewIndexViewDataSource,YYNSectionIndexViewDelegate>
 {
     __block NSMutableDictionary *personDict;
     __block NSMutableArray *indexArray;
-    MBProgressHUD *HUD;
+//    MBProgressHUD *HUD;
 }
 @property(nonatomic,strong)UITableView *theTableView;
 @property(nonatomic,strong)UIView *bottomView;
@@ -27,6 +29,10 @@
 @property(nonatomic,strong)NSMutableArray *indexArray;
 @property(nonatomic,strong)MBProgressHUD *HUD;
 @property(nonatomic,assign)BOOL isSelectAll;
+@property(nonatomic,strong)OIHUD *oiHUD;
+@property(nonatomic,strong)NSMutableArray *lastArray;
+@property(nonatomic,strong)NSMutableArray *delArray;
+@property(nonatomic,strong)NSMutableDictionary *kvDic;
 @end
 
 @implementation DeleteVC
@@ -147,15 +153,16 @@
     [self.view addSubview:self.bottomView];
     [self.bottomView setHidden:YES];
 
-    HUD = [[MBProgressHUD alloc] initWithView:self.view];
-    HUD.labelText = @"请稍候...";
-    [self.view addSubview:HUD];
+//    HUD = [[MBProgressHUD alloc] initWithView:self.view];
+//    HUD.labelText = @"请稍候...";
+//    [self.view addSubview:HUD];
 
     [self initData];
 }
 -(void)initData
 {
-    [HUD show:YES];
+//    [HUD show:YES];
+    [self.oiHUD showInView:self.view type:0];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         NSArray *recordsArray = [OIABRecordData ABRecordsArray];
@@ -185,7 +192,8 @@
             NSMutableArray *tempIndexArray = [NSMutableArray arrayWithArray:[[personDict_temp allKeys] sortedArrayUsingSelector:@selector(compare:)]];
             indexArray_temp = tempIndexArray;
             dispatch_sync(dispatch_get_main_queue(), ^{
-                [weakSelf.HUD hide:YES];
+//                [weakSelf.HUD hide:YES];
+                [weakSelf.oiHUD hideView];
                 [weakSelf.indexArray removeAllObjects];
                 [weakSelf.personDict removeAllObjects];
                 weakSelf.indexArray = [indexArray_temp mutableCopy];
@@ -255,13 +263,64 @@
 */
 -(void)onExportClick
 {
+    [self.oiHUD showInView:self.view type:1];
+}
+-(void)docheck:(NSNumber*)t
+{
+    NSInteger i = t.integerValue;
+    if (i<self.delArray.count) {
+        [self.oiHUD setDeleteProgress:(i+1) deleteCnt:self.delArray.count];
+        CFErrorRef error = NULL;
+        OIABRecord *record = [self.delArray objectAtIndex:i];
+        ABAddressBookRef iPhoneAddressBook = ABAddressBookCreate();//初始化
+        ABRecordRef deletedPeople = ABAddressBookGetPersonWithRecordID(iPhoneAddressBook, (int)record.recordId);
+        ABAddressBookRemoveRecord(iPhoneAddressBook, deletedPeople, &error);
+        if (error)
+        {
+            if ([self.kvDic objectForKey:[NSString stringWithFormat:@"%ld",record.recordId]])
+            {
+                [self.lastArray addObject:[self.kvDic objectForKey:[NSString stringWithFormat:@"%ld",record.recordId]]];
+            }
+        }
+        i++;
+        [self performSelector:@selector(docheck:) withObject:@(i) afterDelay:0.05];
+    }
+    else
+    {
+        [self.oiHUD hideView];
+        [self updateWithData];
 
+    }
+}
+-(NSMutableArray*)lastArray
+{
+    if (!_lastArray)
+    {
+        _lastArray = [NSMutableArray array];
+    }
+    return _lastArray;
+}
+-(NSMutableArray*)delArray
+{
+    if (!_delArray)
+    {
+        _delArray = [NSMutableArray array];
+    }
+    return _delArray;
+}
+-(NSMutableDictionary*)kvDic
+{
+    if (!_kvDic)
+    {
+        _kvDic = [NSMutableDictionary dictionary];
+    }
+    return _kvDic;
 }
 -(void)onDelClick
 {
     NSMutableArray *delData = [NSMutableArray array];
     NSMutableArray *lastData = [NSMutableArray array];
-    NSMutableDictionary *kvDic = [NSMutableDictionary dictionary];
+    [self.kvDic removeAllObjects];
     for (int i= 0; i < indexArray.count; i++)
     {
         NSString *key = [indexArray objectAtIndex:i];
@@ -277,41 +336,36 @@
             {
                 [lastData addObject:record];
             }
-            [kvDic setObject:record forKey:[NSString stringWithFormat:@"%ld",record.recordId]];
+            [self.kvDic setObject:record forKey:[NSString stringWithFormat:@"%ld",record.recordId]];
         }
     }
     if (delData.count == 0) {
         [CommonUtil showCommonToastWithStrInCenter:@"请选择删除记录" forView:self.view hideAfterSeconds:1.5 andAfterPostAction:nil postObject:nil];
         return;
     }
-    ABAddressBookRef iPhoneAddressBook = ABAddressBookCreate();//初始化
-    for(int i= 0;i<delData.count;i++)
-    {
-        CFErrorRef error = NULL;
-        OIABRecord *record = [delData objectAtIndex:i];
-        ABRecordRef deletedPeople = ABAddressBookGetPersonWithRecordID(iPhoneAddressBook, (int)record.recordId);
-        ABAddressBookRemoveRecord(iPhoneAddressBook, deletedPeople, &error);
-        if (error)
-        {
-            if ([kvDic objectForKey:[NSString stringWithFormat:@"%ld",record.recordId]])
-            {
-                [lastData addObject:[kvDic objectForKey:[NSString stringWithFormat:@"%ld",record.recordId]]];
-            }
-        }
-    }
+    [self.lastArray removeAllObjects];
+    [self.lastArray addObjectsFromArray:lastData];
+    [self.delArray removeAllObjects];
+    [self.delArray addObjectsFromArray:delData];
+    NSInteger delTotalCnt = delData.count;
+    [self.oiHUD showInView:self.view deleteCnt:delTotalCnt];
+    [self docheck:@(0)];
+}
+-(void)updateWithData
+{
+    __weak typeof(self) weakSelf = self;
     CFErrorRef error = NULL;
-    ABAddressBookSave(iPhoneAddressBook, &error);
+    //    ABAddressBookSave(iPhoneAddressBook, &error);
     if (error)
     {
         [CommonUtil showCommonToastWithStrInCenter:@"通讯录删除失败" forView:self.view hideAfterSeconds:1.5 andAfterPostAction:nil postObject:nil];
     }
     else
     {
-        [CommonUtil showCommonToastWithStrInCenter:@"通讯录删除成功" forView:self.view hideAfterSeconds:1.5 andAfterPostAction:nil postObject:nil];
+        //        [CommonUtil showCommonToastWithStrInCenter:@"通讯录删除成功" forView:self.view hideAfterSeconds:1.5 andAfterPostAction:nil postObject:nil];
 
-        __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSArray *recordsArray = lastData;
+            NSArray *recordsArray = weakSelf.lastArray;
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
             dispatch_async(queue, ^{
                 NSMutableArray *indexArray_temp = [NSMutableArray array];
@@ -586,5 +640,12 @@
     UIImageView *selectImage = (UIImageView*)[self.bottomView viewWithTag:10000];
     [selectImage setHighlighted:self.isSelectAll];
     [self.theTableView reloadData];
+}
+-(OIHUD*)oiHUD
+{
+    if (!_oiHUD) {
+        _oiHUD = [[OIHUD alloc]init];
+    }
+    return _oiHUD;
 }
 @end

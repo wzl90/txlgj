@@ -30,6 +30,7 @@
 		803C4CD123225BBC00C797F5 /* check_selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 803C4CCD23225BBC00C797F5 /* check_selected@3x.png */; };
 		803C4CD223225BBC00C797F5 /* check_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 803C4CCE23225BBC00C797F5 /* check_selected@2x.png */; };
 		803C4CD323225BBC00C797F5 /* check_unselected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 803C4CCF23225BBC00C797F5 /* check_unselected@3x.png */; };
+		8044887B23289BB90022E626 /* OIHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 8044887A23289BB90022E626 /* OIHUD.m */; };
 		804A215823263ABD00F91012 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 804A215623263ABD00F91012 /* MBProgressHUD.m */; };
 		805472CD2320FA770021AE60 /* main_ab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 805472CB2320FA760021AE60 /* main_ab@2x.png */; };
 		805472CE2320FA770021AE60 /* main_ab@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 805472CC2320FA760021AE60 /* main_ab@3x.png */; };
@@ -102,6 +103,8 @@
 		803C4CCD23225BBC00C797F5 /* check_selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check_selected@3x.png"; sourceTree = "<group>"; };
 		803C4CCE23225BBC00C797F5 /* check_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check_selected@2x.png"; sourceTree = "<group>"; };
 		803C4CCF23225BBC00C797F5 /* check_unselected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check_unselected@3x.png"; sourceTree = "<group>"; };
+		8044887923289BB90022E626 /* OIHUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OIHUD.h; sourceTree = "<group>"; };
+		8044887A23289BB90022E626 /* OIHUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OIHUD.m; sourceTree = "<group>"; };
 		804A215623263ABD00F91012 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		804A215723263ABD00F91012 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		805472CB2320FA760021AE60 /* main_ab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "main_ab@2x.png"; sourceTree = "<group>"; };
@@ -353,6 +356,8 @@
 				80AD321B231E52A70015836E /* CommonUtil.m */,
 				80FCF174231CF8B700AB2918 /* OINavigationController.h */,
 				80FCF173231CF8B700AB2918 /* OINavigationController.m */,
+				8044887923289BB90022E626 /* OIHUD.h */,
+				8044887A23289BB90022E626 /* OIHUD.m */,
 			);
 			path = OIKit;
 			sourceTree = "<group>";
@@ -452,6 +457,7 @@
 				803C4CB92322541900C797F5 /* OIABDataUtil.m in Sources */,
 				803C4CC92322553400C797F5 /* ChineseCalendarDB.cpp in Sources */,
 				804A215823263ABD00F91012 /* MBProgressHUD.m in Sources */,
+				8044887B23289BB90022E626 /* OIHUD.m in Sources */,
 				803C4CA923220C4D00C797F5 /* ABAuthorizeView.m in Sources */,
 				80AD3243231E67E40015836E /* NSString+MD5Addition.m in Sources */,
 				80FCF16C231CF54800AB2918 /* main.m in Sources */,

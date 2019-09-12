@@ -12,6 +12,8 @@
 #import <AddressBook/AddressBook.h>
 #import "DeleteVC.h"
 #import "AppDelegate.h"
+#import "commonUtil.h"
+
 @interface MainVC ()
 @property(nonatomic,strong)UIScrollView *theScrollView;
 @end

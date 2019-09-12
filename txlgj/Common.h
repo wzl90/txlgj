@@ -11,7 +11,7 @@
 
 
 #endif /* Common_h */
-#import "CommonUtil.h"
+
 #define kFont(fontName, fontSize) [CommonUtil getFontWithFontName:fontName andFontSize:fontSize]
 #define OIRGBA(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 #define kIPhoneXTopHeight ([UIScreen mainScreen].bounds.size.height == 812 ? 24 : 0)
