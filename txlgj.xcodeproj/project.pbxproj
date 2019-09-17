@@ -64,6 +64,8 @@
 		801D16D523308C49005F1B9A /* LOTCompositionContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 801D169323308C48005F1B9A /* LOTCompositionContainer.m */; };
 		801D16D623308C49005F1B9A /* LOTMaskContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 801D169423308C48005F1B9A /* LOTMaskContainer.m */; };
 		801D16D823308EB7005F1B9A /* gou.json in Resources */ = {isa = PBXBuildFile; fileRef = 801D16D723308EB7005F1B9A /* gou.json */; };
+		801D16DC2330CD87005F1B9A /* hud_person.png in Resources */ = {isa = PBXBuildFile; fileRef = 801D16DB2330CD87005F1B9A /* hud_person.png */; };
+		801D16DE2330D648005F1B9A /* merge.json in Resources */ = {isa = PBXBuildFile; fileRef = 801D16DD2330D648005F1B9A /* merge.json */; };
 		801F3319232601F100FD849B /* YYNTableViewIndexView.m in Sources */ = {isa = PBXBuildFile; fileRef = 801F3315232601F100FD849B /* YYNTableViewIndexView.m */; };
 		801F331A232601F100FD849B /* YYNTableViewIndexItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 801F3316232601F100FD849B /* YYNTableViewIndexItemView.m */; };
 		801F331D2326046E00FD849B /* Hanzi.m in Sources */ = {isa = PBXBuildFile; fileRef = 801F331C2326046E00FD849B /* Hanzi.m */; };
@@ -242,6 +244,8 @@
 		801D169D23308C48005F1B9A /* LOTAnimationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOTAnimationView.h; sourceTree = "<group>"; };
 		801D169E23308C48005F1B9A /* LOTAnimationView_Compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOTAnimationView_Compat.h; sourceTree = "<group>"; };
 		801D16D723308EB7005F1B9A /* gou.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gou.json; sourceTree = "<group>"; };
+		801D16DB2330CD87005F1B9A /* hud_person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hud_person.png; sourceTree = "<group>"; };
+		801D16DD2330D648005F1B9A /* merge.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = merge.json; sourceTree = "<group>"; };
 		801F3315232601F100FD849B /* YYNTableViewIndexView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYNTableViewIndexView.m; sourceTree = "<group>"; };
 		801F3316232601F100FD849B /* YYNTableViewIndexItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYNTableViewIndexItemView.m; sourceTree = "<group>"; };
 		801F3317232601F100FD849B /* YYNTableViewIndexView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYNTableViewIndexView.h; sourceTree = "<group>"; };
@@ -575,6 +579,7 @@
 		801F3313232601D900FD849B /* ThirdPart */ = {
 			isa = PBXGroup;
 			children = (
+				801D16DD2330D648005F1B9A /* merge.json */,
 				801D16D723308EB7005F1B9A /* gou.json */,
 				801D161C23308C48005F1B9A /* Lottie */,
 				804A215723263ABD00F91012 /* MBProgressHUD.h */,
@@ -620,6 +625,7 @@
 		805472CA2320FA510021AE60 /* default */ = {
 			isa = PBXGroup;
 			children = (
+				801D16DB2330CD87005F1B9A /* hud_person.png */,
 				801F3322232624D600FD849B /* avatar_default.png */,
 				801F331F23260F4C00FD849B /* ab_empty@2x.png */,
 				801F331E23260F4C00FD849B /* ab_empty@3x.png */,
@@ -832,6 +838,8 @@
 				801D16D823308EB7005F1B9A /* gou.json in Resources */,
 				80FCF166231CF54800AB2918 /* Assets.xcassets in Resources */,
 				803C4CB323223FAA00C797F5 /* tabbar_back@3x.png in Resources */,
+				801D16DC2330CD87005F1B9A /* hud_person.png in Resources */,
+				801D16DE2330D648005F1B9A /* merge.json in Resources */,
 				801F332123260F4C00FD849B /* ab_empty@2x.png in Resources */,
 				80AD3216231E4F290015836E /* tabbar_1_on@2x.png in Resources */,
 				80AD3217231E4F290015836E /* tabbar_1_on@3x.png in Resources */,

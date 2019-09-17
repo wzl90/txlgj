@@ -13,7 +13,7 @@
 #import "DeleteVC.h"
 #import "AppDelegate.h"
 #import "commonUtil.h"
-
+#import "MergeVC.h"
 @interface MainVC ()
 @property(nonatomic,strong)UIScrollView *theScrollView;
 @end
@@ -137,7 +137,8 @@
 -(void)doOper:(NSInteger)type
 {
     if (type == 0) {
-
+        MergeVC *mergeVC = [[MergeVC alloc]init];
+        [BRAppDelegate.navigationController pushViewController:mergeVC animated:YES];
     }
     else if(type == 1)
     {

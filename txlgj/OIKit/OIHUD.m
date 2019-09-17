@@ -10,7 +10,9 @@
 #import "Common.h"
 #import "CommonUtil.h"
 #import "Lottie.h"
-
+#define degreesToRadians(x) (M_PI*(x)/180.0) //把角度转换成PI的方式
+#define  PROGREESS_WIDTH 196 //圆直径
+#define PROGRESS_LINE_WIDTH 4 //弧线的宽度
 //@interface OIPointHUD : UIView
 //@property(nonatomic,strong)CALayer *animationLayer;
 //@end
@@ -73,7 +75,7 @@
 @property(nonatomic,strong)UIView *point3;
 @property(nonatomic,assign)NSInteger type;
 @property(nonatomic,copy)void(^showDelBlock)(void);
--(void)startAnimation:(NSInteger)type;//0 基础动画 1 做打钩动画
+-(void)startAnimation:(NSInteger)type;//0 基础动画 1 删除做打钩动画
 -(void)resetPoint;
 @end
 
@@ -160,11 +162,155 @@
 }
 @end
 
+@interface HUDProgress : UIView
+@property(nonatomic,strong)CAShapeLayer *trackLayer;
+@property(nonatomic,strong)CAShapeLayer *progressLayer;
+@end
+
+@implementation HUDProgress
+
+-(id)init
+{
+    self = [super init];
+    if (self) {
+        self.bounds = CGRectMake(0, 0, 88, 88);
+        UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2) radius:(self.bounds.size.width/2-PROGRESS_LINE_WIDTH/2) startAngle:degreesToRadians(126) endAngle:degreesToRadians(54) clockwise:NO];
+
+        _trackLayer = [CAShapeLayer layer];//创建一个track shape layer
+        _trackLayer.frame = self.bounds;
+        [self.layer addSublayer:_trackLayer];
+        _trackLayer.fillColor = [[UIColor clearColor] CGColor];
+        _trackLayer.strokeColor = [[UIColor whiteColor] CGColor];//指定path的渲染颜色
+        _trackLayer.opacity = 0.25; //背景同学你就甘心做背景吧，不要太明显了，透明度小一点
+        _trackLayer.lineCap = kCALineCapRound;//指定线的边缘是圆的
+        _trackLayer.lineWidth = PROGRESS_LINE_WIDTH;//线的宽度
+        _trackLayer.path =[path CGPath]; //把path传递給layer，然后layer会处理相应的渲染
+
+        _progressLayer = [CAShapeLayer layer];//创建一个track shape layer
+        _progressLayer.frame = self.bounds;
+        [self.layer addSublayer:_progressLayer];
+        _progressLayer.fillColor = [[UIColor clearColor] CGColor];
+        _progressLayer.strokeColor = [[UIColor whiteColor] CGColor];//指定path的渲染颜色
+        _progressLayer.opacity = 1; //背景同学你就甘心做背景吧，不要太明显了，透明度小一点
+        _progressLayer.lineCap = kCALineCapRound;//指定线的边缘是圆的
+        _progressLayer.lineWidth = PROGRESS_LINE_WIDTH;//线的宽度
+        _progressLayer.path =[path CGPath]; //把path传递給layer，然后layer会处理相应的渲染
+        _progressLayer.strokeStart = 0;
+        _progressLayer.strokeEnd = 0.0;
+    }
+    return self;
+}
+-(void)resetStatus
+{
+    _progressLayer.strokeStart = 0;
+    _progressLayer.strokeEnd = 0.0;
+}
+@end
+
+@interface MergeAnimation : UIView
+@property(nonatomic,strong)UIImageView *hudPerson;
+@property(nonatomic,strong)UILabel *contentLabel;
+@property(nonatomic,strong)UILabel *numberLabel;
+@property(nonatomic,assign)NSInteger index;
+@property(nonatomic,assign)BOOL stop;
+@property(nonatomic,copy)void(^MergeAnimationBlock)(void);
+@end
+
+@implementation MergeAnimation
+
+-(id)init
+{
+    self = [super init];
+    if (self) {
+        self.backgroundColor = [UIColor clearColor];
+        self.bounds = CGRectMake(0, 0, 120, 120);
+
+        _hudPerson = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 120, 120)];
+        [_hudPerson setImage:[UIImage imageNamed:@"hud_person.png"]];
+        [self addSubview:_hudPerson];
+
+        _contentLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 78, self.bounds.size.width, 14)];
+        [_contentLabel setBackgroundColor:[UIColor clearColor]];
+        [_contentLabel setTextAlignment:NSTextAlignmentCenter];
+        [_contentLabel setTextColor:[UIColor whiteColor]];
+        [self addSubview:_contentLabel];
+        [_contentLabel setFont:kFont(@"PingFangSC-Medium", 12)];
+
+        _numberLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, self.bounds.size.width, 14)];
+        [_numberLabel setTextColor:[UIColor whiteColor]];
+        [_numberLabel setBackgroundColor:[UIColor clearColor]];
+        [_numberLabel setTextAlignment:NSTextAlignmentCenter];
+        [_numberLabel setFont:kFont(@"PingFangSC-Medium", 14)];
+        [self addSubview:_numberLabel];
+        [_contentLabel setAlpha:0];
+        [_numberLabel setAlpha:0];
+
+    }
+    return self;
+}
+-(void)startAnimation
+{
+    _index = 0;
+    _stop = NO;
+    [self doAnimation];
+
+}
+-(void)doAnimation
+{
+    NSArray *titlArr = @[@"+1",@"+2",@"+3"];
+    NSArray *contentArr = @[@"DRESS",@"TELE",@"NAME"];
+
+    [_numberLabel setFrame:CGRectMake(0, 21, self.bounds.size.width, 14)];
+    [_numberLabel setText:titlArr[_index]];
+    [_contentLabel setText:contentArr[_index]];
+    [_numberLabel setAlpha:0];
+    [_contentLabel setAlpha:1];
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.numberLabel setFrame:CGRectMake(0, 19, self.bounds.size.width, 14)];
+        [self.numberLabel setAlpha:1];
+    }completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.3 animations:^{
+            [self.numberLabel setFrame:CGRectMake(0, 17, self.bounds.size.width, 14)];
+            [self.numberLabel setAlpha:0];
+        } completion:^(BOOL finished) {
+            self.index ++;
+            [self.numberLabel setFrame:CGRectMake(0, 21, self.bounds.size.width, 14)];
+            if (self.index%3==0)
+            {
+                self.index = 0;
+                [self.contentLabel setAlpha:0];
+                [self performSelector:@selector(checkAnimation) withObject:nil afterDelay:0.5];
+            }
+            else
+            {
+                [self doAnimation];
+            }
+        }];
+    }];
+}
+-(void)checkAnimation
+{
+    if (self.stop)
+    {
+        if (self.MergeAnimationBlock) {
+            self.MergeAnimationBlock();
+        }
+    }
+    else
+    {
+        [self doAnimation];
+    }
+}
+@end
+
 @interface OIHUD ()
 //@property(nonatomic,strong)OIPointHUD *pointView;
 @property(nonatomic,strong)UIControl *backgroundControl;
 @property(nonatomic,strong)OIPointView2 *pointView2;
 @property(nonatomic,strong)LOTAnimationView *lottieImage;
+@property(nonatomic,strong)LOTAnimationView *mergeImage;
+@property(nonatomic,strong)HUDProgress *progressView;
+@property(nonatomic,strong)MergeAnimation *mergeView;
 @end
 
 @implementation OIHUD
@@ -190,7 +336,6 @@
 }
 -(void)hideView
 {
-//    _pointView.animationLayer.speed = 0;
     [self removeFromSuperview];
     [self.backgroundControl removeFromSuperview];
 }
@@ -200,7 +345,7 @@
     {
         _backgroundControl = [[UIControl alloc]init];
         [_backgroundControl setBackgroundColor:[UIColor clearColor]];
-//        [_backgroundControl addTarget:self action:@selector(changeStatus) forControlEvents:UIControlEventTouchUpInside];
+        [_backgroundControl addTarget:self action:@selector(changeMergeStauts) forControlEvents:UIControlEventTouchUpInside];
     }
     return _backgroundControl;
 }
@@ -298,8 +443,59 @@
     UILabel *titleLabel = (UILabel*)[self viewWithTag:1001];
     [numberLabel setAlpha:0];
     [titleLabel setAlpha:0];
+    [self doFinish];
+}
+-(void)showInView:(UIView *)view mergeCnt:(NSInteger)mergeCnt
+{
+    [view addSubview:self.backgroundControl];
+    self.backgroundControl.frame = view.bounds;
+    [view addSubview:self];
+    [self setCenter:view.center];
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+
     __weak typeof(self) weakSelf = self;
 
+    _mergeView = [[MergeAnimation alloc]init];
+    [_mergeView setFrame:CGRectMake(0, 0, 120, 120)];
+    _mergeView.MergeAnimationBlock = ^{
+        [weakSelf addMergeFinishAnimation];
+    };
+    [self addSubview:_mergeView];
+
+    _progressView = [[HUDProgress alloc]init];
+    _progressView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
+    [self addSubview:_progressView];
+
+    [_mergeView startAnimation];
+}
+-(void)changeMergeStauts
+{
+    _mergeView.stop = YES;
+}
+-(void)addMergeFinishAnimation
+{
+    [_mergeView setAlpha:0];
+    [_progressView setAlpha:0];
+    __weak typeof(self) weakSelf = self;
+
+    if (_mergeImage)
+    {
+        if (_mergeImage.superview != nil) {
+            [_mergeImage removeFromSuperview];
+        }
+        _mergeImage = nil;
+    }
+    _mergeImage = [LOTAnimationView animationNamed:@"merge.json"];
+    _mergeImage.frame = CGRectMake(0, 0, 120, 120);
+    [self addSubview:_mergeImage];
+    [_mergeImage playWithCompletion:^(BOOL animationFinished) {
+        [weakSelf doFinish];
+    }];
+}
+-(void)doFinish
+{
+    [_mergeImage removeFromSuperview];
+    __weak typeof(self) weakSelf = self;
     if (_lottieImage)
     {
         if (_lottieImage.superview != nil) {
