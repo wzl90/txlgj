@@ -158,16 +158,17 @@
 //    [self.view addSubview:HUD];
 
     [self initData];
+//    [self.oiHUD showInView:self.view type:0];
 }
 -(void)initData
 {
 //    [HUD show:YES];
     [self.oiHUD showInView:self.view type:0];
     __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSArray *recordsArray = [OIABRecordData ABRecordsArray];
+//    dispatch_async(dispatch_get_main_queue(), ^{
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         dispatch_async(queue, ^{
+            NSArray *recordsArray = [OIABRecordData ABRecordsArray];
             NSMutableArray *indexArray_temp = [NSMutableArray array];
             NSMutableDictionary *personDict_temp = [NSMutableDictionary dictionary];
             for(OIABRecord *remind in recordsArray)
@@ -215,7 +216,7 @@
                 [weakSelf.theTableView reloadData];
             });
         });
-    });
+//    });
 }
 -(UIView*)configTableViewFootView
 {
@@ -287,7 +288,7 @@
     }
     else
     {
-        [self.oiHUD hideView];
+        [self.oiHUD checkStatus:1];
         [self updateWithData];
 
     }
@@ -355,7 +356,8 @@
 {
     __weak typeof(self) weakSelf = self;
     CFErrorRef error = NULL;
-    //    ABAddressBookSave(iPhoneAddressBook, &error);
+    ABAddressBookRef iPhoneAddressBook = ABAddressBookCreate();//初始化
+    ABAddressBookSave(iPhoneAddressBook, &error);
     if (error)
     {
         [CommonUtil showCommonToastWithStrInCenter:@"通讯录删除失败" forView:self.view hideAfterSeconds:1.5 andAfterPostAction:nil postObject:nil];

@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)hideView;
 -(void)showInView:(UIView *)view deleteCnt:(NSInteger)deleteCnt;
 -(void)setDeleteProgress:(NSInteger)progress deleteCnt:(NSInteger)deleteCnt;
+-(void)checkStatus:(NSInteger)type;
 @end
 
 NS_ASSUME_NONNULL_END
